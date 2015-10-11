@@ -1,0 +1,20 @@
+{
+  "name": "D3 Wind Rose",
+  "version": "0.0.1",
+  "authors": [
+    "Peter Carrero <peter.carrero@gmail.com>"
+  ],
+  "description": "D3 Wind Rose for Downwash Calculations",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "foundation": "~5.5.2",
+    "fontawesome": "~4.3.0"
+  }
+}

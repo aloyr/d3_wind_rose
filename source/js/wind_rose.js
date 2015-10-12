@@ -25,6 +25,12 @@
         .startAngle(function(d, i) {return i * w + gap;})
         .endAngle(function(d, i) {return i * w + w - gap;}),
 
+      arc2 = d3.svg.arc()
+        .innerRadius(inner)
+        .outerRadius(inner + 1)
+        .startAngle(function(d, i) {return i * w + gap;})
+        .endAngle(function(d, i) {return i * w + w - gap;}),
+
       getRange = function(d) {
         result = [];
         for (i = 0; i < 360; i += d) {
@@ -43,15 +49,21 @@
         .attr('transform', 'translate(' + [ cx, cy ] + ')')
         .attr('id', 'outer-label');
 
-  group.selectAll('path')
+  var effect = group.selectAll('path')
     .data(data)
     .enter()
     .append('path')
-    .attr('d', arc)
+    .attr('d', arc2)
     .attr('stroke', 'black')
     .attr('stroke-width', 0.4)
     .attr('opacity', 0.7)
     .attr('fill', d3.scale.category20b());
+
+  effect.transition()
+    .duration(200)
+    .delay(function(d, i) {return 500 + i * 10;})
+    .ease('elastic')
+    .attr('d', arc);
 
   var axis_enter = axis.selectAll('path')
     .data(labels)

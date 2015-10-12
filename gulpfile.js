@@ -78,7 +78,6 @@ gulp.task('copy-markup', function () {
 // start web server
 gulp.task('connect', function() {
     connect.server({
-      open: true,
       base: 'app/',
       port: 8000
     });

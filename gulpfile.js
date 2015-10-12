@@ -10,7 +10,8 @@ var gulp     = require('gulp'),
   livereload = require('gulp-livereload'),
   sass       = require('gulp-sass'),
   sourcemaps = require('gulp-sourcemaps'),
-  uglify     = require('gulp-uglify');
+  uglify     = require('gulp-uglify'),
+  connect    = require('gulp-connect-php');
 
 // setup jshint
 gulp.task('jshint', function () {
@@ -25,7 +26,7 @@ gulp.task('compile-js', function () {
     'bower_components/jquery/dist/jquery.js',
     'bower_components/foundation/js/foundation/foundation.js',
     'bower_components/foundation/js/foundation/foundation.alert.js',
-    'bower_components/d3/d3.d3.min.js',
+    'bower_components/d3/d3.min.js',
     'source/js/**/*.js'
   ])
     .pipe(sourcemaps.init())
@@ -43,7 +44,7 @@ gulp.task('compile-js', function () {
 // compile css
 gulp.task('compile-css', function () {
   return gulp.src([
-      'source/**/*.scss', 
+      'source/**/*.scss',
       'bower_components/fontawesome/scss/font-awesome.scss'])
     .pipe(sourcemaps.init())
     .pipe(concat('app.css'))
@@ -68,17 +69,26 @@ gulp.task('copy-fontawesome', function () {
 
 // copy markup
 gulp.task('copy-markup', function () {
-  gulp.src('source/html/**/*.html')
+  gulp.src('source/**/*.html')
     .pipe(gulp.dest('app'))
     .pipe(livereload())
     .pipe(notify({ message: 'Finished copying an HTML file' }));
 });
 
+// start web server
+gulp.task('connect', function() {
+    connect.server({
+      open: true,
+      base: 'app/',
+      port: 8000
+    });
+});
+
 // watch files
-gulp.task('watch', ['build'], function () {
+gulp.task('watch', ['build', 'connect'], function () {
   notify({ message: 'Gulp started to watch existing files for changes' });
   livereload.listen();
-  gulp.watch('source/html/**/*.html', ['copy-markup']);
+  gulp.watch('source/**/*.html', ['copy-markup']);
   gulp.watch(['source/scss/**/*.scss',
     'bower_components/fontawesome/scss/font-awesome.scss'], ['compile-css']);
   gulp.watch('source/js/**/*.js', ['jshint', 'compile-js']);

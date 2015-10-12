@@ -1,6 +1,6 @@
 (function($){
 
-  var data = [0,2,4,8,1,2,4,8,1,2,4,8,1,2,4,8,1,2,4,8,1,2,4,8,1,2,4,8,1,2,4,8,1,2,4,8];
+  var data = [1,2,4,8,1,2,4,8,1,2,4,8,1,2,4,8,1,2,4,8,1,2,4,8,1,2,4,8,1,2,4,8,1,2,4,8];
 
   var size = 500,
       cx = size/2,
@@ -72,7 +72,8 @@
     .text(function(d, i) {return d + 'x';})
     .attr('fill', 'black')
     .attr('opacity', 0.4)
-    .attr('text-anchor', 'middle')
+    // .attr('text-anchor', 'middle')
+    .attr('x', 3)
     .attr('y', function(d, i) {return (inner + ( r - inner) * d / 8 - 10) * -1;})
     .attr('font-size', '10px');
 

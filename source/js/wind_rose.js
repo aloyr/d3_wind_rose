@@ -90,6 +90,7 @@
     .attr('text-anchor', 'middle')
     .attr('alignment-baseling', 'middle')
     .attr('font-size', '10px')
-    .attr('opacity', function(d, i) {return (d % 30) == 0 ? 0.7 : 0.3;});
+    .attr('font-weight', function(d, i) {return (d % 30) == 0 ? 'bold' : 'normal';})
+    .attr('opacity', function(d, i) {return (d % 30) == 0 ? 0.45 : 0.3;});
 
 }(jQuery));

@@ -1,47 +1,94 @@
 (function($){
-  
-var data = [1,2,4,8,1,2,4,8,1,2,4,8,1,2,4,8,1,2,4,8,1,2,4,8,1,2,4,8,1,2,4,8,1,2,4,8];
 
-var svg = d3.select('body').append('svg')
-          .attr({width: 500, height: 500})
-          .append('g')
-          .attr('transform', 'translate(250,250)');
+  var data = [0,2,4,8,1,2,4,8,1,2,4,8,1,2,4,8,1,2,4,8,1,2,4,8,1,2,4,8,1,2,4,8,1,2,4,8];
 
-var group = svg.append('g')
-            .attr('transform', 'translate(250, 250)');
+  var size = 500,
+      cx = size/2,
+      cy = size/2,
 
-var r = 200;
-var p = Math.PI * 2;
-var gap = 0.005;
-var w = p/36;
+      svg = d3.select('body').append('svg')
+        .attr({width: size, height: size})
 
-d3.scale.category20b();
-/*
-for (i = 0; i < 36; i++) {
+      group = svg.append('g')
+        .attr('transform', 'translate(' + [ cx, cy ] + ')')
+        .attr('id', 'stack-data'),
 
-  var arc = d3.svg.arc()
-    .innerRadius(20)
-    .outerRadius(100 + (i * 2))
-    .startAngle(i * w + gap)
-    .endAngle(i * w + w - gap);
+      r = size * .4,
+      p = Math.PI * 2,
+      gap = 0,
+      w = p/36,
+      inner = r/4,
 
-  group.append('path')
-    .attr('d', arc);
+      arc = d3.svg.arc()
+        .innerRadius(inner)
+        .outerRadius(function(d, i) {return inner + (r - inner) * d /8;})
+        .startAngle(function(d, i) {return i * w + gap;})
+        .endAngle(function(d, i) {return i * w + w - gap;}),
 
-}
-*/
+      getRange = function(d) {
+        result = [];
+        for (i = 0; i < 360; i += d) {
+          result.push(i);
+        }
+        return result;
+      },
 
-  var arc = d3.svg.arc()
-    .innerRadius(20)
-    .outerRadius(function(d, i) {return 20 * 8 / d + 40;})
-    .startAngle(function(d, i) {return i * w + gap;})
-    .endAngle(function(d, i) {return i * w + w - gap;});
+      labels = [2, 4, 6, 8],
 
-svg.selectAll('path')
-  .data(data)
-  .enter()
-  .append('path')
-  .attr('d', arc)
-  .attr('fill', d3.scale.category20b());
+      axis = svg.append('g')
+        .attr('transform', 'translate(' + [ cx, cy ] + ')')
+        .attr('id', 'stack-axis'),
+
+      outer_labels = svg.append('g')
+        .attr('transform', 'translate(' + [ cx, cy ] + ')')
+        .attr('id', 'outer-label');
+
+  group.selectAll('path')
+    .data(data)
+    .enter()
+    .append('path')
+    .attr('d', arc)
+    .attr('stroke', 'black')
+    .attr('stroke-width', 0.4)
+    .attr('opacity', 0.7)
+    .attr('fill', d3.scale.category20b());
+
+  var axis_enter = axis.selectAll('path')
+    .data(labels)
+    .enter();
+
+  axis_enter.append('circle')
+    .attr({
+      'cx': 0,
+      'cy': 0,
+      'r': function(d) {return inner + (r - inner) * d / 8;},
+      'fill': 'none',
+      'stroke': function(d, i) { return (i % 2) == 0 ? '#bbbbbb' : '#555555';},
+      'stroke-width': function(d, i) { return (i % 2) == 0 ? 0.4 : 0.4; },
+      'opacity': 0.5
+    });
+
+  axis_enter.append('text')
+    .text(function(d, i) {return d + 'x';})
+    .attr('fill', 'black')
+    .attr('opacity', 0.4)
+    .attr('text-anchor', 'middle')
+    .attr('y', function(d, i) {return (inner + ( r - inner) * d / 8 - 10) * -1;})
+    .attr('font-size', '10px');
+
+  var outer_labels_enter = outer_labels.selectAll('path')
+    .data(getRange(10))
+    .enter();
+
+  outer_labels_enter.append('text')
+    .text(function(d, i) { return d; })
+    // .attr('y', function(d, i) {return ((r+10) * Math.cos(Math.PI * d / 180) * -1) + 5;})
+    // .attr('x', function(d, i) {return (r+10) * Math.sin(Math.PI * d / 180);})
+    .attr('y', (r + 2) * -1)
+    .attr('transform', function(d, i) {return 'rotate(' + d + ' 0,0' + ')';})
+    .attr('text-anchor', 'middle')
+    .attr('alignment-baseling', 'middle')
+    .attr('font-size', '10px')
+    .attr('opacity', function(d, i) {return (d % 30) == 0 ? 0.7 : 0.3;});
 
 }(jQuery));
